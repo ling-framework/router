@@ -31,24 +31,21 @@ class Router {
         $this->params = array();
     }
 
-
-    // public function prefixTags(array $tags){
-    //     $uri = "secure/auth/facebook/auth/{id}";
-
-    //     $groups = array("secure/auth" => "admin secure");
-    //     $groups = array("secure" => ["admin"]);
-    //     $tags = ["secure" => [
-    //         "light",
-    //         "auth" => "admin dark",
-    //         "oauth" => "admin light"
-    //     ]];
-    //     // if index 0 => there's root
-        
-    // }
-
     public function rules(string $prefix, array $rules, array $tags = null) {
-        $prefix = "board";
-        $rules = array("all", "{board_name}/view/{id}", function(){}, "rule-tag");
+        $tokens = explode("/", $prefix);
+        $temp = &$this->ruleTree;
+        foreach($tokens as $token) {
+            $temp[$token]= array();
+            $temp = &$temp[$token];
+        }
+        if ($tags) {
+            foreach ($rules as &$rule) {
+                if (count($rule) > 3) {
+                    $rule[3] =array_unique(array_merge($rule[3], $tags));
+                }
+            }
+        }
+        array_push($temp, $rules);
         
         return $this;
     }

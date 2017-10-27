@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "37882b0a7ec9508d5796d47a0e5585dd",
+    "content-hash": "c74199c7c0d1035ca0142002f8291c10",
     "packages": [
         {
             "name": "ling/ling-common",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fri13th/ling-common",
-                "reference": "2e87f38a5ae3d91d1972536bddeb10f82784265f"
+                "url": "https://github.com/ling-framework/common",
+                "reference": "4767f513f4b2f9f0768c5252eaebd2ab35cc7c1f"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -56,7 +56,7 @@
                 "configuration",
                 "framework"
             ],
-            "time": "2017-10-26T02:19:02+00:00"
+            "time": "2017-10-27T09:01:20+00:00"
         }
     ],
     "packages-dev": [
