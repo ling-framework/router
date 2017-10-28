@@ -4,17 +4,15 @@ namespace Ling\Router;
 
 use function Ling\hook as hook;
 
-class Router {
+class SimpleRouter {
     /** from server */
     public $domain;
     public $referrer;
     public $uri;
     public $method;
-    public $tokens;
-    public $matched;
 
     /** from user set up */
-    public $ruleTree;
+    public $rules;
     public $params;
 
     /** set in run */
@@ -28,40 +26,31 @@ class Router {
         $this->referrer = filter_input(INPUT_SERVER, "HTTP_REFERER", FILTER_SANITIZE_STRING); // how it works?
         $this->uri = filter_input(INPUT_SERVER, "PATH_INFO", FILTER_SANITIZE_STRING); //remove query part
         $this->method = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_SPECIAL_CHARS);
-        $this->tokens = explode($this->uri);
-        $this->matched = false;
 
         $this->ruleTree = array();
         $this->params = array();
     }
 
-    public function params(array $params) {
-        $this->params = array_merge($this->params, $params);
-    }
-
-
-    public function rules(string $prefix, array $rules, array $tags = null) {
+    public function rules(array $rules, array $tags = null) {
         if ($this->matched) return $this;
-        
-        $tokens = explode("/", $prefix);
-        $temp = &$this->ruleTree;
-        
-        foreach($tokens as $token) {
-            $temp[$token]= array();
-            $temp = &$temp[$token];
-        }
-
-        if ($tags) {
-            foreach ($rules as &$rule) {
+        // this code wasn't tested against same prefix addition. and root need test set
+        $this->rules = $rules;
+        foreach ($this->rules as &$rule) {
+            if ($tags) {
                 if (count($rule) > 3) {
-                    $rule[3] =array_unique(array_merge($rule[3], $tags));
+                    $rule[3] = array_unique(array_merge($rule[3], $tags));
+                } else {
+                    $rule[3] = $tags;
                 }
             }
+
+            // if matched, run
+
+            
         }
-        
-        array_push($temp, $rules);
-        
-        return $this;
+
+        //if not matched, 404 error
+
     }
 
     public function end(){

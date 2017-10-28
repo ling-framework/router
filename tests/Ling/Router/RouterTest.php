@@ -26,11 +26,11 @@ class RouterTest extends TestCase
             "id" => "([0-9]+)?"
         ];
 
+        $_SERVER["PATH_INFO"] = $uri; 
+
         $router = new Router();
         $router->params($params);
         $router->rules($prefix, $rules, $tags);
-
-        $_SERVER["PATH_INFO"] = $uri; 
         $router->run();
         
         $this->assertEquals($this->result, "user|123");
