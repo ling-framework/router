@@ -2,8 +2,8 @@
 
 namespace Ling\Router;
 
-use function Ling\config as hook;
-use function Ling\hook as hook;
+use function Ling\config;
+use function Ling\hook;
 
 class SimpleRouter {
     /** from server */
@@ -18,53 +18,67 @@ class SimpleRouter {
     public $matched;
 
     
-    public function __construct(){
-        $this->domain = filter_input(INPUT_SERVER, "HTTP_HOST", FILTER_SANITIZE_URL);
-        $this->referrer = filter_input(INPUT_SERVER, "HTTP_REFERER", FILTER_SANITIZE_STRING); // how it works?
-        $this->uri = filter_input(INPUT_SERVER, "PATH_INFO", FILTER_SANITIZE_STRING); //remove query part
-        $this->method = strtolower(filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_SPECIAL_CHARS));
+    public function __construct(array $domainWhiteList = null){
+        $domain = $_SERVER['HTTP_HOST'];
+        $this->domain = 'localhost';
+        if ($domainWhiteList && in_array($domain, $domainWhiteList, true))  {
+            $this->domain = $domain;
+        }
+
+        // filter input doesn't support cli
+        $this->referrer = filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING);
+        $this->uri = filter_var($_SERVER['PATH_INFO'], FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
+        $this->method = strtolower(filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_SPECIAL_CHARS));
 
         $this->rule = null;
         $this->tags = array();
         $this->matched = false;
     }
 
+    /**
+     * @param array $rules
+     * @param array|null $tags
+     */
     public function rules(array $rules, array $tags = null) {
-        if ($this->matched) return $this;
-        // this code wasn't tested against same prefix addition. and root need test set
+        if ($this->matched) {
+            return;
+        }
 
         foreach($rules as $rule) {
-            $method = $rule[0];
-            $regex = $rule[1];
-            $controller = $ruls[2];
+            list($method, $regex, $controller) = $rule;
 
-            if ($method == "all" || strstr($method, $this->method)) {
-                if (preg_match($regex, $this->uri, $matches)) {
-                    array_shift($match);
+            if ($method === 'all' || false !== strpos($this->method, $method)) {
+
+                if (preg_match('#' . $regex . '#', $this->uri, $matches)) {
+                    array_shift($matches);
 
                     $this->rule = $rule;
-                    if ($tags) $this->tags = array_merge($this->tags, $tags); 
-                    if (count($rule) > 3) $this->tags = array_merge($tags, $rule[3]);
-                    $this->tags = array_unique($this->tags);
-
+                    if ($tags) {
+                        $this->tags = array_merge($this->tags, $tags);
+                    }
+                    if (count($rule) > 3) {
+                        $this->tags = array_merge($this->tags, $rule[3]);
+                    }
                     $this->matched = true;
 
-                    array_push($matches, $this);
+                    $matches[] = $this;
 
-                    config(array("router", $this));
-                    hook("hook.router.initialized");
-                    call_user_func_array($controller, $matched);
+                    config(array('router', $this)); // save to config
+                    hook('hook.router.initialized'); // run hook
+                    call_user_func_array($controller, $matches); // run controller
 
                     return;
                 }
             }
         }
+
+        return;
     }
 
     public function notFound(){
-        if ($this->matched == false) {
+        if ($this->matched === false) {
             http_response_code(404);
-            hook("hook.router.notFound");
+            hook('hook.router.notFound');
         }
     }
 
