@@ -9,7 +9,7 @@ class SimpleRouterTest extends TestCase
     protected $result = '';
 
     public function testSimpleRouter() {
-        $uri = 'main/board/user/view/123';
+        $uri = '/main/board/user/view/123';
         $controller = function ($board_name, $id, $router) { //last object is router, more arguments will be ignored..
             $this->result = $board_name . '|' . $id;
         };
@@ -19,14 +19,14 @@ class SimpleRouterTest extends TestCase
 
         $tags = ['auth', 'def'];
         $rules =  [
-            ['get', 'main/board/([^\/]+)/view/([0-9]+)?', $controller, ['abc']],
-            ['get', 'main/test/([^\/]+)/view/([0-9]+)?', $testController, ['ghi']],
+            ['get', '/main/board/([^\/]+)/view/([0-9]+)?', $controller, ['abc']],
+            ['get', '/main/test/([^\/]+)/view/([0-9]+)?', $testController, ['ghi']],
         ];
 
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['HTTP_REFERER'] = '';
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['PATH_INFO'] = $uri;
+        $_SERVER['REQUEST_URI'] = $uri;
 
         $router = new SimpleRouter(['localhost']);
         $router->rules($rules, $tags);

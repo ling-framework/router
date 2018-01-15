@@ -30,7 +30,7 @@ class RouterTest extends TestCase
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['HTTP_REFERER'] = '';
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['PATH_INFO'] = $uri;
+        $_SERVER['REQUEST_URI'] = $uri;
 
         $router = new Router();
         $router->params($params);

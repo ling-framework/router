@@ -37,7 +37,7 @@ class Router {
 
         // filter input doesn't support cli
         $this->referrer = filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING);
-        $this->uri = filter_var($_SERVER['PATH_INFO'], FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
+        $this->uri = filter_var(strtok($_SERVER['REQUEST_URI'],'?'), FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
         $this->method = strtolower(filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_SPECIAL_CHARS));
         $this->tokens = explode('/', $this->uri);
         $this->matched = false;
@@ -85,7 +85,7 @@ class Router {
                         return "($val)" . ($optional ? '?' : '');
                     }
                     return $param;
-                }, '#' . $regex . '#'); // change params
+                }, '#^' . $regex . '$#'); // change params
 
                 if (preg_match($regex, $uri, $matches)) {
                     array_shift($matches);

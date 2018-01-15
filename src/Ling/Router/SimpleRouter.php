@@ -27,7 +27,7 @@ class SimpleRouter {
 
         // filter input doesn't support cli
         $this->referrer = filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING);
-        $this->uri = filter_var($_SERVER['PATH_INFO'], FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
+        $this->uri = filter_var(strtok($_SERVER['REQUEST_URI'],'?'), FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
         $this->method = strtolower(filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_SPECIAL_CHARS));
 
         $this->rule = null;
@@ -49,7 +49,7 @@ class SimpleRouter {
 
             if ($method === 'all' || false !== strpos($this->method, $method)) {
 
-                if (preg_match('#' . $regex . '#', $this->uri, $matches)) {
+                if (preg_match('#^' . $regex . '$#', $this->uri, $matches)) {
                     array_shift($matches);
 
                     $this->rule = $rule;
