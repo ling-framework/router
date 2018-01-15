@@ -9,8 +9,8 @@ class RouterTest extends TestCase
     protected $result = '';
 
     public function testRouter() {
-        $uri = 'main/board/user/view/123';
-        $prefix = 'main/board';
+        $uri = '/main/board/user/view/123';
+        $prefix = '/main/board';
         $controller = function ($board_name, $id, $router) { // more argument is ignored..
             $this->result = $board_name . '|' . $id;
         };
