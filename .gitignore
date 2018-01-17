@@ -21,5 +21,4 @@ Homestead.json
 
 .DS_Store
 .idea/
-
-vendor/
+composer.json
