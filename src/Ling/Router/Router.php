@@ -1,7 +1,7 @@
 <?php
 
 namespace Ling\Router;
-use function Ling\config;
+use function Ling\env;
 use function Ling\hook;
 
 /**
@@ -103,7 +103,7 @@ class Router {
 
                     $matches[] = $this;
 
-                    config(array('router', $this));
+                    env(array('router' => $this));
                     hook('hook.router.initialized');
                     call_user_func_array($controller, $matches);
 

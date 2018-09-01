@@ -2,7 +2,7 @@
 
 namespace Ling\Router;
 
-use function Ling\config;
+use function Ling\env;
 use function Ling\hook;
 
 class SimpleRouter {
@@ -63,7 +63,7 @@ class SimpleRouter {
 
                     $matches[] = $this;
 
-                    config(array('router', $this)); // save to config
+                    env(array('router' => $this)); // save to env
                     hook('hook.router.initialized'); // run hook
                     call_user_func_array($controller, $matches); // run controller
 
