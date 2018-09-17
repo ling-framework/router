@@ -26,7 +26,7 @@ class SimpleRouter {
         }
 
         // filter input doesn't support cli
-        $this->referrer = filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING);
+        $this->referrer = isset($_SERVER['HTTP_REFERER']) ? filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING) : null;
         $this->uri = filter_var(strtok($_SERVER['REQUEST_URI'],'?'), FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
         $this->method = strtolower(filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_SPECIAL_CHARS));
 
@@ -78,7 +78,11 @@ class SimpleRouter {
     public function notFound(){
         if ($this->matched === false) {
             http_response_code(404);
-            hook('hook.router.notFound');
+            if ($handle404) {
+                $handle404();
+            } else {
+                hook('hook.router.404');
+            }
         }
     }
 

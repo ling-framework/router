@@ -114,10 +114,14 @@ class Router {
         return;
     }
 
-    public function notFound(){
+    public function notFound($handle404 = null){
         if ($this->matched === false) {
             http_response_code(404);
-            hook('hook.router.404');
+            if ($handle404) {
+                $handle404();
+            } else {
+                hook('hook.router.404');
+            }
         }
     }
 
