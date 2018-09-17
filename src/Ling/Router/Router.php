@@ -36,7 +36,7 @@ class Router {
         }
 
         // filter input doesn't support cli
-        $this->referrer = filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING);
+        $this->referrer = isset($_SERVER['HTTP_REFERER']) ? filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_STRING) : null;
         $this->uri = filter_var(strtok($_SERVER['REQUEST_URI'],'?'), FILTER_SANITIZE_SPECIAL_CHARS); //remove query part
         $this->method = strtolower(filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_SPECIAL_CHARS));
         $this->tokens = explode('/', $this->uri);
