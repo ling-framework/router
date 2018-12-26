@@ -27,7 +27,6 @@ class Router {
     public $prefix;
     public $rule;
 
-    
     public function __construct(array $domainWhiteList = null){
         $domain = $_SERVER['HTTP_HOST'];
         $this->domain = 'localhost';
@@ -62,11 +61,11 @@ class Router {
         }
 
         $uri = $this->uri;
-        if ($prefix !== '/') { // there's some prefix
-            if (strpos($this->uri, $prefix) !== 0) { // not match prefix, there's nothing
+        if ($prefix !== '') { // there's some prefix
+            if (strpos($uri, $prefix) !== 0) { // not match prefix, there's nothing
                 return;
             }
-            $uri = substr($this->uri, strlen($prefix) + 1);
+            $uri = substr($uri, strlen($prefix));
         }
 
         foreach($rules as $rule) {

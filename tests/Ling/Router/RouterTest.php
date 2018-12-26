@@ -16,10 +16,10 @@ class RouterTest extends TestCase
         };
         $tags = ['abc', 'def'];
         $rules1 =  [
-            ['get', '{board_name}/view/{id}', $controller, ['auth']]
+            ['get', '/{board_name}/view/{id}', $controller, ['auth']]
         ]; // if controller is not callable..
         $rules2 =  [
-            ['get', 'test/view/{id}', $controller, ['auth2']]
+            ['get', '/test/view/{id}', $controller, ['auth2']]
         ]; // if controller is not callable..
 
         $params = array(
