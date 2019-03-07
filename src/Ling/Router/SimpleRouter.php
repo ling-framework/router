@@ -77,10 +77,10 @@ class SimpleRouter {
 
     public function notFound(){
         if ($this->matched === false) {
-            http_response_code(404);
             if ($handle404) {
                 $handle404();
             } else {
+                http_response_code(404);
                 hook('hook.router.404');
             }
         }
